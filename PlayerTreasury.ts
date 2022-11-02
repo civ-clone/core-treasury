@@ -6,9 +6,9 @@ import {
   RuleRegistry,
   instance as ruleRegistryInstance,
 } from '@civ-clone/core-rule/RuleRegistry';
-import { Spend, ISpendRegistry } from './Rules/Spend';
 import City from '@civ-clone/core-city/City';
 import Player from '@civ-clone/core-player/Player';
+import Spend from './Rules/Spend';
 import Yield from '@civ-clone/core-yield/Yield';
 
 export interface IPlayerTreasury {
@@ -37,6 +37,7 @@ export class PlayerTreasury extends Yield implements IPlayerTreasury {
   buy(city: City): void {
     const cityBuild = this.#cityBuildRegistry.getByCity(city),
       cost = this.cost(city);
+
     if (city.player() !== this.#player || this.value() < cost.value()) {
       return;
     }
@@ -48,12 +49,15 @@ export class PlayerTreasury extends Yield implements IPlayerTreasury {
   }
 
   cost(city: City): Yield {
-    const cityBuild = this.#cityBuildRegistry.getByCity(city),
-      // TODO: do this via Rules and then use Gold
-      cost = new Yield();
-    (this.#ruleRegistry as ISpendRegistry).process(Spend, cityBuild, cost);
+    const cityBuild = this.#cityBuildRegistry.getByCity(city);
 
-    return cost;
+    return this.#ruleRegistry
+      .process(Spend, cityBuild)
+      .reduce((totalYield, currentYield) => {
+        totalYield.add(currentYield);
+
+        return totalYield;
+      });
   }
 
   player(): Player {

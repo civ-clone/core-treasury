@@ -9,7 +9,8 @@ interface IPlayerTreasuryRegistry extends IEntityRegistry<PlayerTreasury> {
 }
 export declare class PlayerTreasuryRegistry
   extends EntityRegistry<PlayerTreasury>
-  implements IPlayerTreasuryRegistry {
+  implements IPlayerTreasuryRegistry
+{
   constructor();
   getByPlayer(player: Player): PlayerTreasury;
 }
