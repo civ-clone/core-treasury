@@ -49,10 +49,11 @@ export class PlayerTreasury extends Yield implements IPlayerTreasury {
   }
 
   cost(city: City): Yield {
-    const cityBuild = this.#cityBuildRegistry.getByCity(city);
+    const cityBuild = this.#cityBuildRegistry.getByCity(city),
+      cost = new Yield();
 
     return this.#ruleRegistry
-      .process(Spend, cityBuild)
+      .process(Spend, cityBuild, cost)
       .reduce((totalYield, currentYield) => {
         totalYield.add(currentYield);
 

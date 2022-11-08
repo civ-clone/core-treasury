@@ -37,9 +37,9 @@ class PlayerTreasury extends Yield_1.default {
         this.subtract(cost.value());
     }
     cost(city) {
-        const cityBuild = __classPrivateFieldGet(this, _PlayerTreasury_cityBuildRegistry, "f").getByCity(city);
+        const cityBuild = __classPrivateFieldGet(this, _PlayerTreasury_cityBuildRegistry, "f").getByCity(city), cost = new Yield_1.default();
         return __classPrivateFieldGet(this, _PlayerTreasury_ruleRegistry, "f")
-            .process(Spend_1.default, cityBuild)
+            .process(Spend_1.default, cityBuild, cost)
             .reduce((totalYield, currentYield) => {
             totalYield.add(currentYield);
             return totalYield;
