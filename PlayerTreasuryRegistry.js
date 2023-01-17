@@ -8,9 +8,13 @@ class PlayerTreasuryRegistry extends EntityRegistry_1.EntityRegistry {
         super(PlayerTreasury_1.default);
     }
     getByPlayer(player) {
-        const playerTreasuries = this.getBy('player', player);
+        return this.getBy('player', player);
+    }
+    getByPlayerAndType(player, YieldType) {
+        const playerTreasuries = this.filter((playerTreasury) => playerTreasury.player() === player &&
+            playerTreasury.yield() === YieldType);
         if (playerTreasuries.length !== 1) {
-            throw new TypeError('Wrong number of PlayerTreasuries for player.');
+            throw new TypeError(`Wrong number of playerTreasuries: ${playerTreasuries.length}`);
         }
         return playerTreasuries[0];
     }

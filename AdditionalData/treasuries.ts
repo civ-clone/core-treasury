@@ -8,7 +8,7 @@ import Player from '@civ-clone/core-player/Player';
 export const getAdditionalData = (
   playerTreasuryRegistry: PlayerTreasuryRegistry = playerTreasuryRegistryInstance
 ) => [
-  new AdditionalData(Player, 'treasury', (player: Player) =>
+  new AdditionalData(Player, 'treasuries', (player: Player) =>
     playerTreasuryRegistry.getByPlayer(player)
   ),
 ];

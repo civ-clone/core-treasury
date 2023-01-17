@@ -1,1 +1,1 @@
-{"version":3,"file":"registerAdditionalData.js","sourceRoot":"","sources":["registerAdditionalData.ts"],"names":[],"mappings":";;AAAA,+FAAgH;AAChH,wDAAiD;AAEjD,iCAA8B,CAAC,QAAQ,CAAC,GAAG,IAAA,kBAAQ,GAAE,CAAC,CAAC"}
+{"version":3,"file":"registerAdditionalData.js","sourceRoot":"","sources":["registerAdditionalData.ts"],"names":[],"mappings":";;AAAA,+FAAgH;AAChH,4DAAoD;AACpD,4DAAmD;AAEnD,iCAA8B,CAAC,QAAQ,CAAC,GAAG,IAAA,oBAAS,GAAE,EAAE,GAAG,IAAA,oBAAQ,GAAE,CAAC,CAAC"}

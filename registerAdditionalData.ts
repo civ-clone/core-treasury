@@ -1,4 +1,5 @@
 import { instance as additionalDataRegistryInstance } from '@civ-clone/core-data-object/AdditionalDataRegistry';
-import treasury from './AdditionalData/treasury';
+import spendCost from './AdditionalData/spend-cost';
+import treasury from './AdditionalData/treasuries';
 
-additionalDataRegistryInstance.register(...treasury());
+additionalDataRegistryInstance.register(...spendCost(), ...treasury());
