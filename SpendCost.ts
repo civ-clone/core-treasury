@@ -7,24 +7,24 @@ interface ISpend {
 }
 
 export class SpendCost extends DataObject implements ISpend {
-  #resource: typeof Yield;
-  #value: number;
+  private _resource: typeof Yield;
+  private _value: number;
 
   constructor(resource: typeof Yield, value: number) {
     super();
 
     this.addKey('resource', 'value');
 
-    this.#resource = resource;
-    this.#value = value;
+    this._resource = resource;
+    this._value = value;
   }
 
   resource(): typeof Yield {
-    return this.#resource;
+    return this._resource;
   }
 
   value(): number {
-    return this.#value;
+    return this._value;
   }
 }
 

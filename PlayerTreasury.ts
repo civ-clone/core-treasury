@@ -25,11 +25,11 @@ export interface IPlayerTreasury {
 }
 
 export class PlayerTreasury extends DataObject implements IPlayerTreasury {
-  #cityBuildRegistry: CityBuildRegistry;
-  #player: Player;
-  #ruleRegistry: RuleRegistry;
-  #value: number = 0;
-  #yield: typeof Yield;
+  private _cityBuildRegistry: CityBuildRegistry;
+  private _player: Player;
+  private _ruleRegistry: RuleRegistry;
+  private _value: number = 0;
+  private _yield: typeof Yield;
 
   constructor(
     player: Player,
@@ -41,10 +41,10 @@ export class PlayerTreasury extends DataObject implements IPlayerTreasury {
 
     this.addKey('value', 'yield');
 
-    this.#cityBuildRegistry = cityBuildRegistry;
-    this.#player = player;
-    this.#ruleRegistry = ruleRegistry;
-    this.#yield = YieldType;
+    this._cityBuildRegistry = cityBuildRegistry;
+    this._player = player;
+    this._ruleRegistry = ruleRegistry;
+    this._yield = YieldType;
   }
 
   add(value: Yield | number): void {
@@ -54,21 +54,21 @@ export class PlayerTreasury extends DataObject implements IPlayerTreasury {
       return;
     }
 
-    this.#value += value;
+    this._value += value;
   }
 
   buy(city: City): void {
-    const cityBuild = this.#cityBuildRegistry.getByCity(city),
+    const cityBuild = this._cityBuildRegistry.getByCity(city),
       [spendCost] = this.cost(city).filter(
-        (spendCost) => spendCost.resource() === this.#yield
+        (spendCost) => spendCost.resource() === this._yield
       ),
       cost = spendCost.value();
 
-    if (city.player() !== this.#player || this.value() < cost) {
+    if (city.player() !== this._player || this.value() < cost) {
       return;
     }
 
-    this.#ruleRegistry.process(Rush, cityBuild, spendCost);
+    this._ruleRegistry.process(Rush, cityBuild, spendCost);
     // TODO: do this via Rules and then use Production
     cityBuild.add(new Yield(cityBuild.remaining()));
 
@@ -76,17 +76,17 @@ export class PlayerTreasury extends DataObject implements IPlayerTreasury {
   }
 
   cost(city: City): SpendCost[] {
-    const cityBuild = this.#cityBuildRegistry.getByCity(city);
+    const cityBuild = this._cityBuildRegistry.getByCity(city);
 
-    return this.#ruleRegistry.process(Spend, cityBuild);
+    return this._ruleRegistry.process(Spend, cityBuild);
   }
 
   player(): Player {
-    return this.#player;
+    return this._player;
   }
 
   set(value: Yield | number): void {
-    this.#value = 0;
+    this._value = 0;
 
     this.add(value);
   }
@@ -98,15 +98,15 @@ export class PlayerTreasury extends DataObject implements IPlayerTreasury {
       return;
     }
 
-    this.#value -= value;
+    this._value -= value;
   }
 
   value(): number {
-    return this.#value;
+    return this._value;
   }
 
   yield(): typeof Yield {
-    return this.#yield;
+    return this._yield;
   }
 }
 

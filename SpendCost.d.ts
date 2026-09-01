@@ -5,7 +5,8 @@ interface ISpend {
   value(): number;
 }
 export declare class SpendCost extends DataObject implements ISpend {
-  #private;
+  private _resource;
+  private _value;
   constructor(resource: typeof Yield, value: number);
   resource(): typeof Yield;
   value(): number;

@@ -18,7 +18,11 @@ export declare class PlayerTreasury
   extends DataObject
   implements IPlayerTreasury
 {
-  #private;
+  private _cityBuildRegistry;
+  private _player;
+  private _ruleRegistry;
+  private _value;
+  private _yield;
   constructor(
     player: Player,
     YieldType: typeof Yield,
