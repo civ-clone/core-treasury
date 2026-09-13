@@ -60,5 +60,6 @@ class PlayerTreasury extends DataObject_1.default {
     }
 }
 exports.PlayerTreasury = PlayerTreasury;
+PlayerTreasury.transient = ['_cityBuildRegistry', '_ruleRegistry'];
 exports.default = PlayerTreasury;
 //# sourceMappingURL=PlayerTreasury.js.map

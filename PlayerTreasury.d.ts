@@ -18,6 +18,7 @@ export declare class PlayerTreasury
   extends DataObject
   implements IPlayerTreasury
 {
+  static readonly transient: string[];
   private _cityBuildRegistry;
   private _player;
   private _ruleRegistry;

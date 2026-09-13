@@ -25,6 +25,7 @@ export interface IPlayerTreasury {
 }
 
 export class PlayerTreasury extends DataObject implements IPlayerTreasury {
+  static readonly transient = ['_cityBuildRegistry', '_ruleRegistry'];
   private _cityBuildRegistry: CityBuildRegistry;
   private _player: Player;
   private _ruleRegistry: RuleRegistry;
