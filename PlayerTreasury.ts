@@ -94,7 +94,7 @@ export class PlayerTreasury extends DataObject implements IPlayerTreasury {
 
   subtract(value: Yield | number): void {
     if (value instanceof Yield) {
-      this.add(value.value());
+      this.subtract(value.value());
 
       return;
     }
