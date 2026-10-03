@@ -47,7 +47,7 @@ class PlayerTreasury extends DataObject_1.default {
     }
     subtract(value) {
         if (value instanceof Yield_1.default) {
-            this.add(value.value());
+            this.subtract(value.value());
             return;
         }
         this._value -= value;
