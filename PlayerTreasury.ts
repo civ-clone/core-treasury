@@ -63,9 +63,14 @@ export class PlayerTreasury extends DataObject implements IPlayerTreasury {
       [spendCost] = this.cost(city).filter(
         (spendCost) => spendCost.resource() === this._yield
       ),
-      cost = spendCost.value();
+      cost = spendCost?.value();
 
-    if (city.player() !== this._player || this.value() < cost) {
+    // Nothing to buy when the rules give no price in this treasury's yield.
+    if (
+      cost === undefined ||
+      city.player() !== this._player ||
+      this.value() < cost
+    ) {
       return;
     }
 

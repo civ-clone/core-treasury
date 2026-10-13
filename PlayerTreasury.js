@@ -25,8 +25,11 @@ class PlayerTreasury extends DataObject_1.default {
         this._value += value;
     }
     buy(city) {
-        const cityBuild = this._cityBuildRegistry.getByCity(city), [spendCost] = this.cost(city).filter((spendCost) => spendCost.resource() === this._yield), cost = spendCost.value();
-        if (city.player() !== this._player || this.value() < cost) {
+        const cityBuild = this._cityBuildRegistry.getByCity(city), [spendCost] = this.cost(city).filter((spendCost) => spendCost.resource() === this._yield), cost = spendCost === null || spendCost === void 0 ? void 0 : spendCost.value();
+        // Nothing to buy when the rules give no price in this treasury's yield.
+        if (cost === undefined ||
+            city.player() !== this._player ||
+            this.value() < cost) {
             return;
         }
         this._ruleRegistry.process(Rush_1.default, cityBuild, spendCost);
