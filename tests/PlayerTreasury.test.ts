@@ -1,5 +1,9 @@
+import City from '@civ-clone/core-city/City';
+import CityBuild from '@civ-clone/core-city-build/CityBuild';
+import CityBuildRegistry from '@civ-clone/core-city-build/CityBuildRegistry';
 import Player from '@civ-clone/core-player/Player';
 import PlayerTreasury from '../PlayerTreasury';
+import RuleRegistry from '@civ-clone/core-rule/RuleRegistry';
 import Yield from '@civ-clone/core-yield/Yield';
 import { expect } from 'chai';
 
@@ -43,5 +47,32 @@ describe('PlayerTreasury', () => {
 
     expect(fromNumber.value()).to.equal(5);
     expect(fromYield.value()).to.equal(5);
+  });
+
+  it("doesn't buy, or throw, when the rules give no price", () => {
+    const player = new Player(),
+      city = { player: () => player } as unknown as City;
+    let added = false;
+
+    const cityBuild = {
+        city: () => city,
+        remaining: () => 10,
+        add: () => (added = true),
+      } as unknown as CityBuild,
+      cityBuildRegistry = {
+        getByCity: () => cityBuild,
+      } as unknown as CityBuildRegistry,
+      playerTreasury = new PlayerTreasury(
+        player,
+        Yield,
+        cityBuildRegistry,
+        new RuleRegistry()
+      );
+
+    playerTreasury.set(100);
+
+    expect(() => playerTreasury.buy(city)).not.to.throw();
+    expect(playerTreasury.value()).to.equal(100);
+    expect(added).to.equal(false);
   });
 });
