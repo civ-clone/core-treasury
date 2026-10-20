@@ -7,8 +7,11 @@ import {
   instance as ruleRegistryInstance,
 } from '@civ-clone/core-rule/RuleRegistry';
 import City from '@civ-clone/core-city/City';
+import CityImprovement from '@civ-clone/core-city-improvement/CityImprovement';
 import DataObject from '@civ-clone/core-data-object/DataObject';
 import Player from '@civ-clone/core-player/Player';
+import Sell from './Rules/Sell';
+import Sold from './Rules/Sold';
 import Spend from './Rules/Spend';
 import SpendCost from './SpendCost';
 import Yield from '@civ-clone/core-yield/Yield';
@@ -19,6 +22,8 @@ export interface IPlayerTreasury {
   buy(city: City): void;
   cost(city: City): SpendCost[];
   player(): Player;
+  saleValue(cityImprovement: CityImprovement): SpendCost[];
+  sell(cityImprovement: CityImprovement): void;
   set(value: Yield | number, provider: string): void;
   subtract(value: Yield | number, provider: string): void;
   yield(): typeof Yield;
@@ -89,6 +94,32 @@ export class PlayerTreasury extends DataObject implements IPlayerTreasury {
 
   player(): Player {
     return this._player;
+  }
+
+  saleValue(cityImprovement: CityImprovement): SpendCost[] {
+    return this._ruleRegistry.process(Sell, cityImprovement);
+  }
+
+  sell(cityImprovement: CityImprovement): void {
+    const [spendCost] = this.saleValue(cityImprovement).filter(
+        (spendCost) => spendCost.resource() === this._yield
+      ),
+      value = spendCost?.value();
+
+    // Nothing to sell when the rules give no value in this treasury's yield.
+    if (
+      value === undefined ||
+      cityImprovement.city().player() !== this._player ||
+      cityImprovement.destroyed()
+    ) {
+      return;
+    }
+
+    cityImprovement.destroy();
+
+    this.add(value);
+
+    this._ruleRegistry.process(Sold, cityImprovement, this);
   }
 
   set(value: Yield | number): void {

@@ -4,6 +4,8 @@ exports.PlayerTreasury = void 0;
 const CityBuildRegistry_1 = require("@civ-clone/core-city-build/CityBuildRegistry");
 const RuleRegistry_1 = require("@civ-clone/core-rule/RuleRegistry");
 const DataObject_1 = require("@civ-clone/core-data-object/DataObject");
+const Sell_1 = require("./Rules/Sell");
+const Sold_1 = require("./Rules/Sold");
 const Spend_1 = require("./Rules/Spend");
 const Yield_1 = require("@civ-clone/core-yield/Yield");
 const Rush_1 = require("./Rules/Rush");
@@ -43,6 +45,21 @@ class PlayerTreasury extends DataObject_1.default {
     }
     player() {
         return this._player;
+    }
+    saleValue(cityImprovement) {
+        return this._ruleRegistry.process(Sell_1.default, cityImprovement);
+    }
+    sell(cityImprovement) {
+        const [spendCost] = this.saleValue(cityImprovement).filter((spendCost) => spendCost.resource() === this._yield), value = spendCost === null || spendCost === void 0 ? void 0 : spendCost.value();
+        // Nothing to sell when the rules give no value in this treasury's yield.
+        if (value === undefined ||
+            cityImprovement.city().player() !== this._player ||
+            cityImprovement.destroyed()) {
+            return;
+        }
+        cityImprovement.destroy();
+        this.add(value);
+        this._ruleRegistry.process(Sold_1.default, cityImprovement, this);
     }
     set(value) {
         this._value = 0;
