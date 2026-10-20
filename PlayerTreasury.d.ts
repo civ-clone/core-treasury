@@ -1,6 +1,7 @@
 import { CityBuildRegistry } from '@civ-clone/core-city-build/CityBuildRegistry';
 import { RuleRegistry } from '@civ-clone/core-rule/RuleRegistry';
 import City from '@civ-clone/core-city/City';
+import CityImprovement from '@civ-clone/core-city-improvement/CityImprovement';
 import DataObject from '@civ-clone/core-data-object/DataObject';
 import Player from '@civ-clone/core-player/Player';
 import SpendCost from './SpendCost';
@@ -10,6 +11,8 @@ export interface IPlayerTreasury {
   buy(city: City): void;
   cost(city: City): SpendCost[];
   player(): Player;
+  saleValue(cityImprovement: CityImprovement): SpendCost[];
+  sell(cityImprovement: CityImprovement): void;
   set(value: Yield | number, provider: string): void;
   subtract(value: Yield | number, provider: string): void;
   yield(): typeof Yield;
@@ -34,6 +37,8 @@ export declare class PlayerTreasury
   buy(city: City): void;
   cost(city: City): SpendCost[];
   player(): Player;
+  saleValue(cityImprovement: CityImprovement): SpendCost[];
+  sell(cityImprovement: CityImprovement): void;
   set(value: Yield | number): void;
   subtract(value: Yield | number): void;
   value(): number;
