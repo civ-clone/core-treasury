@@ -138,7 +138,8 @@ describe('PlayerTreasury', () => {
 
     [0, -37].forEach((remaining) =>
       it(`doesn't buy an item that's already paid for (${remaining} shields left)`, () => {
-        const { city, playerTreasury, state } = setUp(remaining, 2 * remaining);
+        // A positive price, so it's the shields left that stop it, not the price.
+        const { city, playerTreasury, state } = setUp(remaining, 20);
 
         playerTreasury.buy(city);
 
