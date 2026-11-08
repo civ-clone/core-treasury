@@ -70,9 +70,13 @@ export class PlayerTreasury extends DataObject implements IPlayerTreasury {
       ),
       cost = spendCost?.value();
 
-    // Nothing to buy when the rules give no price in this treasury's yield.
+    // Nothing to buy when the rules give no price in this treasury's yield, or when the item is already paid for in
+    // shields: buying then would turn the surplus into gold, or throw it away. A negative price would add gold, so it's
+    // refused whatever the rules say.
     if (
       cost === undefined ||
+      cost < 0 ||
+      cityBuild.remaining() <= 0 ||
       city.player() !== this._player ||
       this.value() < cost
     ) {

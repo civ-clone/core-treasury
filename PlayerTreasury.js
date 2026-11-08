@@ -28,8 +28,12 @@ class PlayerTreasury extends DataObject_1.default {
     }
     buy(city) {
         const cityBuild = this._cityBuildRegistry.getByCity(city), [spendCost] = this.cost(city).filter((spendCost) => spendCost.resource() === this._yield), cost = spendCost === null || spendCost === void 0 ? void 0 : spendCost.value();
-        // Nothing to buy when the rules give no price in this treasury's yield.
+        // Nothing to buy when the rules give no price in this treasury's yield, or when the item is already paid for in
+        // shields: buying then would turn the surplus into gold, or throw it away. A negative price would add gold, so it's
+        // refused whatever the rules say.
         if (cost === undefined ||
+            cost < 0 ||
+            cityBuild.remaining() <= 0 ||
             city.player() !== this._player ||
             this.value() < cost) {
             return;
