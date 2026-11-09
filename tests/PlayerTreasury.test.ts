@@ -9,6 +9,7 @@ import PlayerTreasury from '../PlayerTreasury';
 import RuleRegistry from '@civ-clone/core-rule/RuleRegistry';
 import Sell from '../Rules/Sell';
 import Sold from '../Rules/Sold';
+import Spend from '../Rules/Spend';
 import SpendCost from '../SpendCost';
 import Yield from '@civ-clone/core-yield/Yield';
 import { expect } from 'chai';
@@ -80,6 +81,81 @@ describe('PlayerTreasury', () => {
     expect(() => playerTreasury.buy(city)).not.to.throw();
     expect(playerTreasury.value()).to.equal(100);
     expect(added).to.equal(false);
+  });
+
+  describe('buy', () => {
+    const setUp = (remaining: number, price: number) => {
+      const player = new Player(),
+        city = { player: () => player } as unknown as City,
+        state = { added: 0, remaining },
+        cityBuild = {
+          city: () => city,
+          remaining: () => state.remaining,
+          add: (value: Yield) => {
+            state.added += value.value();
+            state.remaining -= value.value();
+          },
+        } as unknown as CityBuild,
+        cityBuildRegistry = {
+          getByCity: () => cityBuild,
+        } as unknown as CityBuildRegistry,
+        ruleRegistry = new RuleRegistry();
+
+      ruleRegistry.register(
+        new Spend(new Effect(() => new SpendCost(Yield, price)))
+      );
+
+      const playerTreasury = new PlayerTreasury(
+        player,
+        Yield,
+        cityBuildRegistry,
+        ruleRegistry
+      );
+
+      playerTreasury.set(100);
+
+      return { city, playerTreasury, state };
+    };
+
+    it('pays the price and completes the item', () => {
+      const { city, playerTreasury, state } = setUp(10, 20);
+
+      playerTreasury.buy(city);
+
+      expect(playerTreasury.value()).to.equal(80);
+      expect(state.added).to.equal(10);
+      expect(state.remaining).to.equal(0);
+    });
+
+    it('buys an item with one shield left', () => {
+      const { city, playerTreasury, state } = setUp(1, 2);
+
+      playerTreasury.buy(city);
+
+      expect(playerTreasury.value()).to.equal(98);
+      expect(state.remaining).to.equal(0);
+    });
+
+    [0, -37].forEach((remaining) =>
+      it(`doesn't buy an item that's already paid for (${remaining} shields left)`, () => {
+        // A positive price, so it's the shields left that stop it, not the price.
+        const { city, playerTreasury, state } = setUp(remaining, 20);
+
+        playerTreasury.buy(city);
+
+        expect(playerTreasury.value()).to.equal(100);
+        expect(state.added).to.equal(0);
+      })
+    );
+
+    it("doesn't buy at a negative price, whatever the rules say", () => {
+      const { city, playerTreasury, state } = setUp(10, -5);
+
+      playerTreasury.buy(city);
+
+      expect(playerTreasury.value()).to.equal(100);
+      expect(state.added).to.equal(0);
+    });
   });
 
   describe('sell', () => {
